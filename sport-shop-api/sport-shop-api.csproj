@@ -5,6 +5,7 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>sport_shop_api</RootNamespace>
+    <UserSecretsId>c1eb24f3-85fd-4e90-97a8-e64198f61c37</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
