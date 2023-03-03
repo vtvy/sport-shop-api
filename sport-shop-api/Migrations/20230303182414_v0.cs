@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace sport_shop_api.Migrations
 {
+    /// <inheritdoc />
     public partial class v0 : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -30,7 +32,7 @@ namespace sport_shop_api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -44,8 +46,10 @@ namespace sport_shop_api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Quality = table.Column<int>(type: "int", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -131,7 +135,7 @@ namespace sport_shop_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HistoryProduct", x => new { x.HistoryId, x.ProductSizeId });
+                    table.PrimaryKey("PK_HistoryProduct", x => new { x.ProductSizeId, x.HistoryId });
                     table.ForeignKey(
                         name: "FK_HistoryProduct_History_HistoryId",
                         column: x => x.HistoryId,
@@ -152,9 +156,9 @@ namespace sport_shop_api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HistoryProduct_ProductSizeId",
+                name: "IX_HistoryProduct_HistoryId",
                 table: "HistoryProduct",
-                column: "ProductSizeId");
+                column: "HistoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_CategoryId",
@@ -178,6 +182,7 @@ namespace sport_shop_api.Migrations
                 unique: true);
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

@@ -1,14 +1,3 @@
 {
-  "dependencies": {
-    "secrets1": {
-      "type": "secrets.user"
-    },
-    "mssql1": {
-      "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/vtvy/databases/sport-shop-api_db",
-      "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:DbContext",
-      "dynamicId": null
-    }
-  }
+  "dependencies": {}
 }

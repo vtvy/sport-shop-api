@@ -1,10 +1,11 @@
-﻿using sport_shop_api.Models;
+﻿using sport_shop_api.Models.Entities;
+using BC = BCrypt.Net.BCrypt;
 
 namespace sport_shop_api.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(AppDbContext context)
+        public static void Initialize(IConfiguration configuration, AppDbContext context)
         {
             context.Database.EnsureCreated();
 
@@ -16,13 +17,8 @@ namespace sport_shop_api.Data
 
             List<User> users = new List<User>()
             {
-                new User() { Email = "admin@gmail.com", Password = "strong", Role = "Admin" },
-                new User() { Email = "vy@gmail.com", Password = "1234", Role = "User"},
-                new User() { Email = "phuong@gmail.com", Password = "1234", Role = "User"},
-                new User() { Email = "minh@gmail.com", Password = "1234", Role = "User"},
-                new User() { Email = "khoi@gmail.com", Password = "1234", Role = "User"},
-                new User() { Email = "ronaldo@gmail.com", Password = "1234", Role = "User"},
-                new User() { Email = "messi@gmail.com", Password = "1234", Role = "User"},
+                new User() { Email = configuration["Accounts:admin-email"], Password = BC.HashPassword(configuration["Accounts:admin-pass"]), Role = "Admin" },
+                new User() { Email = configuration["Accounts:vy-email"], Password = BC.HashPassword(configuration["Accounts:vy-pass"]), Role = "Admin"},
             };
 
             context.Users.AddRange(users);

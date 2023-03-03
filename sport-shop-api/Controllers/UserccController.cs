@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sport_shop_api.Models;
+using sport_shop_api.Models.Entities;
 using System.Security.Claims;
 
 namespace sport_shop_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UserccController : Controller
     {
         [HttpGet("Admin")]
         [Authorize(Roles = "Admin")]
@@ -22,7 +22,7 @@ namespace sport_shop_api.Controllers
         {
             return Ok("Hi");
         }
-        public User? GetCurrentUser()
+        public User GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 

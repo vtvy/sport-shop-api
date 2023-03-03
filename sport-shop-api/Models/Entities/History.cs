@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace sport_shop_api.Models
+namespace sport_shop_api.Models.Entities
 {
     [Table("History")]
     public class History

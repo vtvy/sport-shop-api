@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using sport_shop_api.Models.Entities;
 
-namespace sport_shop_api.Models
+namespace sport_shop_api.Data
 {
     public class AppDbContext : DbContext
     {
@@ -16,16 +17,7 @@ namespace sport_shop_api.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             base.OnModelCreating(builder);
-
-            builder.Entity<HistoryProduct>().HasKey(p => new { p.HistoryId, p.ProductSizeId });
-
-            builder.Entity<User>(entity =>
-            {
-                entity.HasIndex(p => p.Email)
-                      .IsUnique();
-            });
         }
 
     }

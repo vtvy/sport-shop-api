@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace sport_shop_api.Models
+namespace sport_shop_api.Models.Entities
 {
-    [Table("User")]
+    [Table("User"), Index(nameof(Email), IsUnique = true)]
     public class User
     {
         [Key]
@@ -12,8 +12,9 @@ namespace sport_shop_api.Models
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-        public string Role { get; set; } = "User";
-        public string? Address { get; set; }
+        [Required]
+        public string Role { get; set; }
+        public string Address { get; set; }
         public List<History> Histories { get; set; }
     }
 }

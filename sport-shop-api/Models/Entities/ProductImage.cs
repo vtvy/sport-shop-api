@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace sport_shop_api.Models
+namespace sport_shop_api.Models.Entities
 {
     [Table("ProductImage")]
     public class ProductImage
@@ -10,7 +9,6 @@ namespace sport_shop_api.Models
         public int Id { get; set; }
         public string Image { get; set; }
         public int ProductId { get; set; }
-
         [ForeignKey("ProductId")]
         public Product Product { get; set; }
     }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace sport_shop_api.Models
+namespace sport_shop_api.Models.Entities
 {
     [Table("Category")]
     public class Category
@@ -9,7 +9,7 @@ namespace sport_shop_api.Models
         [Key]
         public int CategoryId { get; set; }
         [Required, MaxLength(50)]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         public List<Product> Products { get; set; }
     }
 }

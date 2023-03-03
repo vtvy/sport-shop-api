@@ -5,32 +5,33 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using sport_shop_api.Models;
+using sport_shop_api.Data;
 
 #nullable disable
 
 namespace sport_shop_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230218092313_v0")]
+    [Migration("20230303182414_v0")]
     partial class v0
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.14")
+                .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("sport_shop_api.Models.Category", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -42,13 +43,13 @@ namespace sport_shop_api.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.History", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.History", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -66,41 +67,49 @@ namespace sport_shop_api.Migrations
                     b.ToTable("History");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.HistoryProduct", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.HistoryProduct", b =>
                 {
-                    b.Property<int>("HistoryId")
+                    b.Property<int>("ProductSizeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductSizeId")
+                    b.Property<int>("HistoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("HistoryId", "ProductSizeId");
+                    b.HasKey("ProductSizeId", "HistoryId");
 
-                    b.HasIndex("ProductSizeId");
+                    b.HasIndex("HistoryId");
 
                     b.ToTable("HistoryProduct");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.Product", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Quality")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -109,13 +118,13 @@ namespace sport_shop_api.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.ProductImage", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.ProductImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -130,13 +139,13 @@ namespace sport_shop_api.Migrations
                     b.ToTable("ProductImage");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.ProductSize", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.ProductSize", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -155,13 +164,13 @@ namespace sport_shop_api.Migrations
                     b.ToTable("ProductSize");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.User", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
@@ -175,6 +184,7 @@ namespace sport_shop_api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
@@ -185,9 +195,9 @@ namespace sport_shop_api.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.History", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.History", b =>
                 {
-                    b.HasOne("sport_shop_api.Models.User", "User")
+                    b.HasOne("sport_shop_api.Models.Entities.User", "User")
                         .WithMany("Histories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -196,15 +206,15 @@ namespace sport_shop_api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.HistoryProduct", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.HistoryProduct", b =>
                 {
-                    b.HasOne("sport_shop_api.Models.History", "History")
+                    b.HasOne("sport_shop_api.Models.Entities.History", "History")
                         .WithMany("Products")
                         .HasForeignKey("HistoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("sport_shop_api.Models.ProductSize", "ProductSize")
+                    b.HasOne("sport_shop_api.Models.Entities.ProductSize", "ProductSize")
                         .WithMany()
                         .HasForeignKey("ProductSizeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -215,9 +225,9 @@ namespace sport_shop_api.Migrations
                     b.Navigation("ProductSize");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.Product", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.Product", b =>
                 {
-                    b.HasOne("sport_shop_api.Models.Category", "Category")
+                    b.HasOne("sport_shop_api.Models.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -226,9 +236,9 @@ namespace sport_shop_api.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.ProductImage", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.ProductImage", b =>
                 {
-                    b.HasOne("sport_shop_api.Models.Product", "Product")
+                    b.HasOne("sport_shop_api.Models.Entities.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -237,9 +247,9 @@ namespace sport_shop_api.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.ProductSize", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.ProductSize", b =>
                 {
-                    b.HasOne("sport_shop_api.Models.Product", "Product")
+                    b.HasOne("sport_shop_api.Models.Entities.Product", "Product")
                         .WithMany("Sizes")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -248,24 +258,24 @@ namespace sport_shop_api.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.Category", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.History", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.History", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.Product", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.Product", b =>
                 {
                     b.Navigation("Images");
 
                     b.Navigation("Sizes");
                 });
 
-            modelBuilder.Entity("sport_shop_api.Models.User", b =>
+            modelBuilder.Entity("sport_shop_api.Models.Entities.User", b =>
                 {
                     b.Navigation("Histories");
                 });
