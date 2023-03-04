@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sport_shop_api.Data;
 using sport_shop_api.Models.Entities;
@@ -7,6 +8,7 @@ namespace sport_shop_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -17,14 +19,14 @@ namespace sport_shop_api.Controllers
         }
 
         // GET: api/Categories
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
             return await _context.Categories.ToListAsync();
         }
 
         // GET: api/Categories/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), AllowAnonymous]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -73,10 +75,16 @@ namespace sport_shop_api.Controllers
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+            try
+            {
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync();
+                return Ok(category);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Category is existed");
+            }
         }
 
         // DELETE: api/Categories/5

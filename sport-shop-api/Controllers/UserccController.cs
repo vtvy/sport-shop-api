@@ -22,7 +22,7 @@ namespace sport_shop_api.Controllers
         {
             return Ok("Hi");
         }
-        public User GetCurrentUser()
+        private User GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 

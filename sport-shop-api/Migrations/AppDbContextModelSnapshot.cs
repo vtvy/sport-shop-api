@@ -37,6 +37,9 @@ namespace sport_shop_api.Migrations
 
                     b.HasKey("CategoryId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Category");
                 });
 

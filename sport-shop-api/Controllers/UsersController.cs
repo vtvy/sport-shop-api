@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sport_shop_api.Data;
-using sport_shop_api.Models.Dtos;
 using sport_shop_api.Models.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -25,7 +24,7 @@ namespace sport_shop_api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserDTO userLogin)
+        public async Task<IActionResult> Login([FromBody] User userLogin)
         {
             var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLogin.Email.ToLower());
 
@@ -40,22 +39,16 @@ namespace sport_shop_api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserDTO userRegister)
+        public async Task<IActionResult> Register([FromBody] User userRegister)
         {
             var existed = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userRegister.Email.ToLower());
 
             if (existed == null)
             {
-                User newUser = new User()
-                {
-                    Email = userRegister.Email,
-                    Password = BC.HashPassword(userRegister.Password),
-                    Role = "User"
-                };
-
-                await _context.Users.AddAsync(newUser);
+                userRegister.Password = BC.HashPassword(userRegister.Password);
+                await _context.Users.AddAsync(userRegister);
                 _context.SaveChanges();
-                var token = Generate(newUser);
+                var token = Generate(userRegister);
                 return Ok(token);
             }
 

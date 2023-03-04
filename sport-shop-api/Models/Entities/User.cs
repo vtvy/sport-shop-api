@@ -13,7 +13,7 @@ namespace sport_shop_api.Models.Entities
         [Required]
         public string Password { get; set; }
         [Required]
-        public string Role { get; set; }
+        public string Role { get; set; } = "User";
         public string Address { get; set; }
         public List<History> Histories { get; set; }
     }

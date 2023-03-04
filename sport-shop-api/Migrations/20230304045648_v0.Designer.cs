@@ -12,7 +12,7 @@ using sport_shop_api.Data;
 namespace sport_shop_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230303182414_v0")]
+    [Migration("20230304045648_v0")]
     partial class v0
     {
         /// <inheritdoc />
@@ -39,6 +39,9 @@ namespace sport_shop_api.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Category");
                 });

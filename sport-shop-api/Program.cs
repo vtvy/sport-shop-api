@@ -39,9 +39,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
-
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
