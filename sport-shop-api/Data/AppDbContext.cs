@@ -8,6 +8,7 @@ namespace sport_shop_api.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users { set; get; }
+        public DbSet<RefreshToken> RefreshTokens { set; get; }
         public DbSet<Category> Categories { set; get; }
         public DbSet<History> Histories { set; get; }
         public DbSet<Product> Products { set; get; }

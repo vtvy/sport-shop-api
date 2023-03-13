@@ -22,52 +22,12 @@ namespace sport_shop_api.Controllers
         [HttpGet, AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
-        }
-
-        // GET: api/Categories/5
-        [HttpGet("{id}"), AllowAnonymous]
-        public async Task<ActionResult<Category>> GetCategory(int id)
-        {
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
+            List<Category> categories = await _context.Categories.ToListAsync();
+            return Ok(new
             {
-                return NotFound();
-            }
-
-            return category;
-        }
-
-        // PUT: api/Categories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
-        {
-            if (id != category.CategoryId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+                msg = "Get all categories successfully",
+                data = categories
+            });
         }
 
         // POST: api/Categories
@@ -79,12 +39,52 @@ namespace sport_shop_api.Controllers
             {
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
-                return Ok(category);
+                return Ok(new
+                {
+                    msg = "Create category successfully"
+                });
             }
             catch (Exception)
             {
-                return BadRequest("Category is existed");
+                return BadRequest(new
+                {
+                    msg = "Category is existed"
+                });
             }
+        }
+
+        // PUT: api/Categories/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCategory(int id, Category category)
+        {
+            if (id != category.CategoryId)
+            {
+                return BadRequest(new
+                {
+                    msg = "The id of route and category do not match"
+                });
+            }
+
+            _context.Entry(category).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+
+                return NotFound(new
+                {
+                    msg = "Not found a category with this id"
+                });
+            }
+
+            return Ok(new
+            {
+                msg = "Edit a category successfully"
+            });
         }
 
         // DELETE: api/Categories/5
@@ -94,18 +94,19 @@ namespace sport_shop_api.Controllers
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    msg = "Not found a category with this id"
+                });
             }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
+            return Ok(new
+            {
+                msg = "Delete a category successfully"
+            });
         }
     }
 }

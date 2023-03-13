@@ -12,7 +12,7 @@ using sport_shop_api.Data;
 namespace sport_shop_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230304045648_v0")]
+    [Migration("20230313180833_v0")]
     partial class v0
     {
         /// <inheritdoc />
@@ -167,6 +167,34 @@ namespace sport_shop_api.Migrations
                     b.ToTable("ProductSize");
                 });
 
+            modelBuilder.Entity("sport_shop_api.Models.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("RefreshTokenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefreshTokenId"));
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RefreshTokenId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshToken");
+                });
+
             modelBuilder.Entity("sport_shop_api.Models.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -259,6 +287,17 @@ namespace sport_shop_api.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("sport_shop_api.Models.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("sport_shop_api.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("sport_shop_api.Models.Entities.Category", b =>
