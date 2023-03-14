@@ -35,16 +35,9 @@ namespace sport_shop_api.Controllers
             if (verified)
             {
                 var token = await GenerateToken(currentUser);
-                return Ok(new
-                {
-                    msg = "Login successfully",
-                    data = token
-                });
+                return Ok(token);
             }
-            return NotFound(new
-            {
-                msg = "User is not found"
-            });
+            return NotFound();
         }
 
         [HttpPost("register")]
@@ -58,18 +51,11 @@ namespace sport_shop_api.Controllers
                 _context.Users.Add(userRegister);
                 await _context.SaveChangesAsync();
                 TokenDTO token = await GenerateToken(userRegister);
-                return Ok(new
-                {
-                    msg = "Register successfully",
-                    data = token
-                });
+                return Ok(token);
 
             }
 
-            return BadRequest(new
-            {
-                msg = "User is existed"
-            });
+            return BadRequest();
         }
 
         [HttpPost("renewtoken")]
@@ -119,11 +105,7 @@ namespace sport_shop_api.Controllers
 
                             User user = _context.Users.FirstOrDefault(u => u.UserId == userId);
                             TokenDTO newToken = await GenerateToken(user);
-                            return Ok(new
-                            {
-                                msg = "Renew token successfully",
-                                data = newToken
-                            });
+                            return Ok(newToken);
                         }
                         else
                         {
@@ -140,13 +122,9 @@ namespace sport_shop_api.Controllers
                     throw new Exception("Invalid access token");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                return BadRequest(new
-                {
-                    msg = ex.Message
-                });
+                return BadRequest();
             }
 
 
