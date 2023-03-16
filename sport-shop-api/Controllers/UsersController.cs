@@ -29,15 +29,18 @@ namespace sport_shop_api.Controllers
         public async Task<IActionResult> Login([FromBody] User userLogin)
         {
             var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLogin.Email.ToLower());
-            if (currentUser == null) return NotFound();
-            bool verified = BC.Verify(userLogin.Password, currentUser.Password);
-
-            if (verified)
+            if (currentUser != null)
             {
-                var token = await GenerateToken(currentUser);
-                return Ok(token);
+
+                bool verified = BC.Verify(userLogin.Password, currentUser.Password);
+
+                if (verified)
+                {
+                    var token = await GenerateToken(currentUser);
+                    return Ok(token);
+                }
             }
-            return NotFound();
+            return Unauthorized();
         }
 
         [HttpPost("register")]
@@ -55,7 +58,7 @@ namespace sport_shop_api.Controllers
 
             }
 
-            return BadRequest();
+            return Unauthorized();
         }
 
         [HttpPost("renewtoken")]
