@@ -14,6 +14,6 @@ namespace sport_shop_api.Models.Entities
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
-        public List<HistoryProduct> Products { get; set; }
+        public List<HistoryProduct> HistoryProducts { get; set; }
     }
 }

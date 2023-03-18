@@ -47,6 +47,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -72,6 +74,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
 
 app.MapGet("/", () => "Hello World!");
 

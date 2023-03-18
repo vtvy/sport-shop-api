@@ -12,7 +12,6 @@ namespace sport_shop_api.Data
         public DbSet<Category> Categories { set; get; }
         public DbSet<History> Histories { set; get; }
         public DbSet<Product> Products { set; get; }
-        public DbSet<ProductImage> ProductImages { set; get; }
         public DbSet<ProductSize> ProductSizes { set; get; }
         public DbSet<HistoryProduct> HistoryProducts { set; get; }
 

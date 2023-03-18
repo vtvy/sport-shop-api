@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sport_shop_api.Data;
+using sport_shop_api.Models.DTOs;
 using sport_shop_api.Models.Entities;
 
 namespace sport_shop_api.Controllers
@@ -12,10 +14,12 @@ namespace sport_shop_api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(AppDbContext context)
+        public CategoriesController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Categories
@@ -23,34 +27,8 @@ namespace sport_shop_api.Controllers
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
             List<Category> categories = await _context.Categories.ToListAsync();
-            return Ok(new
-            {
-                msg = "Get all categories successfully",
-                data = categories
-            });
-        }
-
-        // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
-        {
-            try
-            {
-                _context.Categories.Add(category);
-                await _context.SaveChangesAsync();
-                return Ok(new
-                {
-                    msg = "Create category successfully"
-                });
-            }
-            catch (Exception)
-            {
-                return BadRequest(new
-                {
-                    msg = "Category is existed"
-                });
-            }
+            List<CategoryDTO> categoryDTOs = _mapper.Map<List<CategoryDTO>>(categories);
+            return Ok(categoryDTOs);
         }
 
         // PUT: api/Categories/5
@@ -60,10 +38,7 @@ namespace sport_shop_api.Controllers
         {
             if (id != category.CategoryId)
             {
-                return BadRequest(new
-                {
-                    msg = "The id of route and category do not match"
-                });
+                return BadRequest();
             }
 
             _context.Entry(category).State = EntityState.Modified;
@@ -75,16 +50,27 @@ namespace sport_shop_api.Controllers
             catch (DbUpdateConcurrencyException)
             {
 
-                return NotFound(new
-                {
-                    msg = "Not found a category with this id"
-                });
+                return NotFound();
             }
 
-            return Ok(new
+            return Ok();
+        }
+
+        // POST: api/Categories
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Category>> PostCategory(Category category)
+        {
+            try
             {
-                msg = "Edit a category successfully"
-            });
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return Unauthorized();
+            }
         }
 
         // DELETE: api/Categories/5
@@ -94,19 +80,13 @@ namespace sport_shop_api.Controllers
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                return NotFound(new
-                {
-                    msg = "Not found a category with this id"
-                });
+                return NotFound();
             }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                msg = "Delete a category successfully"
-            });
+            return Ok();
         }
     }
 }
