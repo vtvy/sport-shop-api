@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using sport_shop_api.Data;
@@ -12,88 +13,107 @@ namespace sport_shop_api.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProductsController(AppDbContext context)
+        public ProductsController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            this._mapper = mapper;
         }
 
         // GET: api/Products
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
-        }
-
-        // GET: api/Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
+            List<Product> products = await _context.Products.ToListAsync();
+            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
+            return Ok(productDTOs);
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, [FromForm] ProductFileDTO newProductDTO)
         {
-            if (id != product.Id)
+            if (id != newProductDTO.Id)
             {
-                return BadRequest();
+                return BadRequest("Route id and product id is different");
             }
-
-            _context.Entry(product).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
+                Product oldProduct = await _context.Products.FindAsync(newProductDTO.Id);
+                Product newProduct = _mapper.Map<Product>(newProductDTO);
+
+                if (newProductDTO.File?.Length > 0)
                 {
-                    return NotFound();
+                    string stroredPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "wwwroot/files"));
+                    string imgPath = oldProduct.Url[47..];
+                    string fullPath = Path.Combine(stroredPath, imgPath);
+                    System.IO.File.Delete(fullPath);
+
+                    string newImgPath = DateTime.Now.ToString("yyyyMMddTHHmmss") + newProductDTO.File.FileName;
+                    string newFullPath = Path.Combine(stroredPath, imgPath);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await newProductDTO.File.CopyToAsync(fileStream);
+                    }
+                    string Url = $@"https://sport-shop-api.azurewebsites.net/files/{newImgPath}";
+                    newProduct.Url = Url;
+                    _context.Entry(newProduct).State = EntityState.Detached;
+                    await _context.SaveChangesAsync();
+                    return Ok(new { Url });
                 }
                 else
                 {
-                    throw;
+                    newProduct.Url = oldProduct.Url;
+                    _context.Entry(newProduct).State = EntityState.Detached;
+                    await _context.SaveChangesAsync();
+                    return Ok();
                 }
-            }
 
-            return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // POST: api/Products
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductDTO productDTO)
+        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductFileDTO productDTO)
         {
-            if (productDTO.files.Length > 0)
+            try
             {
-                string stroredPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "wwwroot/files"));
-                if (!Directory.Exists(stroredPath))
+                if (productDTO.File?.Length > 0)
                 {
-                    Directory.CreateDirectory(stroredPath);
-                }
-                string imgPath = DateTime.Now.ToString("yyyyMMddTHHmmss") + productDTO.files.FileName;
-                string fullPath = Path.Combine(stroredPath, imgPath);
-                using (var fileStream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await productDTO.files.CopyToAsync(fileStream);
-                }
-                string Url = $@"https://localhost:7117/files/{imgPath}";
+                    string stroredPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "wwwroot/files"));
+                    if (!Directory.Exists(stroredPath))
+                    {
+                        Directory.CreateDirectory(stroredPath);
+                    }
+                    string imgPath = DateTime.Now.ToString("yyyyMMddTHHmmss") + productDTO.File.FileName;
+                    string fullPath = Path.Combine(stroredPath, imgPath);
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await productDTO.File.CopyToAsync(fileStream);
+                    }
+                    string Url = $@"https://sport-shop-api.azurewebsites.net/files/{imgPath}";
 
-                return Ok(Url);
+                    Product product = _mapper.Map<Product>(productDTO);
+                    product.Url = Url;
+                    _context.Products.Add(product);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { Url });
+                }
+
+                return BadRequest("File not found");
             }
 
-            return BadRequest("File not found");
+            catch (Exception)
+            {
+                return BadRequest();
+            }
 
         }
 
@@ -107,15 +127,16 @@ namespace sport_shop_api.Controllers
                 return NotFound();
             }
 
+            string stroredPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "wwwroot/files"));
+            string imgPath = product.Url[47..];
+            string fullPath = Path.Combine(stroredPath, imgPath);
+            System.IO.File.Delete(fullPath);
+            string test = Path.Combine(stroredPath, "20230318T132142profile-pic.png");
+            System.IO.File.Delete(test);
+
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
+            return Ok();
         }
     }
 }

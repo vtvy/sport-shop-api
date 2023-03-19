@@ -9,6 +9,9 @@ namespace sport_shop_api.Helpers
         public MapperProfile()
         {
             CreateMap<Category, CategoryDTO>();
+            CreateMap<ProductFileDTO, Product>();
+            CreateMap<Product, ProductDTO>();
+
         }
     }
 }
