@@ -35,6 +35,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+            Console.WriteLine(connectionString);
+            Console.WriteLine(builder.Configuration["Type"]);
         }
     }
 );
