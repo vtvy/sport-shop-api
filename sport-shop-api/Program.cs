@@ -32,9 +32,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             }
         }
-        catch
+        catch (Exception ex)
         {
-            throw new Exception("Fail to connect database");
+            Console.WriteLine(ex);
         }
     }
 );
