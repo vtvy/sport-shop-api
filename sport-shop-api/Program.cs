@@ -20,19 +20,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     {
 
-        string connectionString;
+        string connectionString = builder.Configuration.GetConnectionString("DbContext");
         if (builder.Configuration["Type"] == "local")
         {
-            connectionString = builder.Configuration.GetConnectionString("DbContext");
             options.UseSqlServer(connectionString);
         }
         else
         {
-            string port = builder.Configuration["port"];
-            string user = builder.Configuration["user"];
-            string password = builder.Configuration["password"];
-            //connectionString = $"server=localhost;port={port};database=localdb;user={user};password={password}";
-            connectionString = "server=127.0.0.1;port=54709;database=localdb;user=azure;password=6#vWHD";
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     }
