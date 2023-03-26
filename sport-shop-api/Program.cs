@@ -12,15 +12,25 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            //policy.WithOrigins("https://vtvy.tk");
             policy.WithOrigins("*");
 
         });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DbContext") ??
-    throw new InvalidOperationException("Connection string 'DbContext' not found.")));
+    {
+
+        string connectionString = builder.Configuration.GetConnectionString("DbContext");
+        if (builder.Configuration["Type"] == "local")
+        {
+            options.UseSqlServer(connectionString);
+        }
+        else
+        {
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+        }
+    }
+);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -53,7 +63,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger", "demo"));
 }
 using (var scope = app.Services.CreateScope())
 {

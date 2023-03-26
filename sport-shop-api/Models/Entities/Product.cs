@@ -18,6 +18,7 @@ namespace sport_shop_api.Models.Entities
         public int Price { get; set; }
         [Required]
         public string Description { get; set; }
+        [Required]
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public Category Category { get; set; }

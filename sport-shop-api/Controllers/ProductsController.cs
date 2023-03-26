@@ -31,7 +31,6 @@ namespace sport_shop_api.Controllers
         }
 
         // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, [FromForm] ProductFileDTO newProductDTO)
         {
@@ -131,8 +130,6 @@ namespace sport_shop_api.Controllers
             string imgPath = product.Url[47..];
             string fullPath = Path.Combine(stroredPath, imgPath);
             System.IO.File.Delete(fullPath);
-            string test = Path.Combine(stroredPath, "20230318T132142profile-pic.png");
-            System.IO.File.Delete(test);
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();

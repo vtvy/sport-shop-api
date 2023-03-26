@@ -11,7 +11,7 @@ namespace sport_shop_api.Helpers
             CreateMap<Category, CategoryDTO>();
             CreateMap<ProductFileDTO, Product>();
             CreateMap<Product, ProductDTO>();
-
+            CreateMap<ProductSize, ProductSizeDTO>();
         }
     }
 }

@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace sport_shop_api.Models.Entities
+namespace sport_shop_api.Models.DTOs
 {
-    [Table("ProductSize")]
-    public class ProductSize
+    public class ProductSizeDTO
     {
-        [Key]
         public int Id { get; set; }
         [Required, MaxLength(50)]
         public string Name { get; set; }
@@ -14,7 +11,5 @@ namespace sport_shop_api.Models.Entities
         public int Price { get; set; }
         [Required]
         public int ProductId { get; set; }
-        [ForeignKey("ProductId")]
-        public Product Product { get; set; }
     }
 }
