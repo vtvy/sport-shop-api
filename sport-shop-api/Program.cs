@@ -32,7 +32,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             string user = builder.Configuration["user"];
             string password = builder.Configuration["password"];
             //connectionString = $"server=localhost;port={port};database=localdb;user={user};password={password}";
-            connectionString = "server=localhost;port=54709;database=localdb;user=azure;password=6#vWHD";
+            connectionString = "server=127.0.0.1;port=54709;database=localdb;user=azure;password=6#vWHD";
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     }
