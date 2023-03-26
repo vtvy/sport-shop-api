@@ -20,13 +20,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     {
 
-        string connectionString = builder.Configuration.GetConnectionString("DbContext");
         if (builder.Configuration["Type"] == "local")
         {
+            string connectionString = builder.Configuration.GetConnectionString("DbContext");
             options.UseSqlServer(connectionString);
         }
         else
         {
+            string connectionString = builder.Configuration.GetConnectionString("MYSQLCONNSTR_localdb");
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     }
