@@ -21,13 +21,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     {
 
         string connectionString = builder.Configuration.GetConnectionString("DbContext");
-        if (builder.Configuration["Type"] == "local")
+        try
         {
-            options.UseSqlServer(connectionString);
+            if (builder.Configuration["Type"] == "local")
+            {
+                options.UseSqlServer(connectionString);
+            }
+            else
+            {
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            }
         }
-        else
+        catch
         {
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            throw new Exception("Fail to connect database");
         }
     }
 );
