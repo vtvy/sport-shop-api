@@ -60,11 +60,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+// for demotration
+app.UseSwagger();
+app.UseSwaggerUI();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
