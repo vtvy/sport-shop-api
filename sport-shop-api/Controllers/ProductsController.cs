@@ -30,9 +30,11 @@ namespace sport_shop_api.Controllers
         }
 
         // PUT: api/Products/5
-        [HttpPut]
-        public async Task<IActionResult> PutProduct([FromForm] ProductFileDTO newProductDTO)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProduct(int id, [FromForm] ProductFileDTO newProductDTO)
         {
+            newProductDTO.Id = id;
+
             try
             {
                 Product oldProduct = await _context.Products.FindAsync(newProductDTO.Id);
