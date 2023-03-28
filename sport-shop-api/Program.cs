@@ -12,7 +12,10 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("*");
+
+            policy.WithOrigins("https://sport.phuongtran.xyz",
+               "https://localhost:3000", "https://vtvy.tk/link")
+            .AllowAnyMethod();
 
         });
 });
@@ -20,13 +23,15 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     {
 
-        string connectionString = builder.Configuration.GetConnectionString("DbContext");
+        string connectionString;
         if (builder.Configuration["Type"] == "local")
         {
+            connectionString = builder.Configuration.GetConnectionString("DbLocal");
             options.UseSqlServer(connectionString);
         }
         else
         {
+            connectionString = builder.Configuration.GetConnectionString("DbContext");
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     }

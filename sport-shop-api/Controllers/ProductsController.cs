@@ -25,9 +25,8 @@ namespace sport_shop_api.Controllers
         [HttpGet, AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            List<Product> products = await _context.Products.ToListAsync();
-            List<ProductDTO> productDTOs = _mapper.Map<List<ProductDTO>>(products);
-            return Ok(productDTOs);
+            List<Product> products = await _context.Products.Include(p => p.Sizes).ToListAsync();
+            return Ok(products);
         }
 
         // PUT: api/Products/5
