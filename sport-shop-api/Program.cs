@@ -7,19 +7,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-        policy =>
-        {
-
-            policy.WithOrigins("https://sport.phuongtran.xyz",
-               "https://localhost:3000", "https://vtvy.tk/link")
-            .AllowAnyMethod();
-
-        });
-});
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     {
 
@@ -86,17 +73,21 @@ using (var scope = app.Services.CreateScope())
 
 
 // Configure the HTTP request pipeline.
-app.UseCors();
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseStaticFiles();
+app.UseRouting();
 
+
+app.UseCors(options => options.WithOrigins("https://sport.phuongtran.xyz",
+               "https://localhost:3000", "https://vtvy.tk/link"
+               , "http://localhost:3001").AllowAnyMethod().AllowAnyHeader());
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseStaticFiles();
 
 app.MapGet("/", () => "Hello World!");
 

@@ -36,7 +36,7 @@ namespace sport_shop_api.Controllers
 
                 if (verified)
                 {
-                    var token = await GenerateToken(currentUser);
+                    TokenDTO token = await GenerateToken(currentUser);
                     return Ok(token);
                 }
             }
@@ -141,6 +141,7 @@ namespace sport_shop_api.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim("UserId", user.UserId.ToString()),
             };
@@ -170,7 +171,7 @@ namespace sport_shop_api.Controllers
             return new TokenDTO
             {
                 access_token = accessToken,
-                refresh_token = refreshToken
+                refresh_token = refreshToken,
             };
         }
     }
