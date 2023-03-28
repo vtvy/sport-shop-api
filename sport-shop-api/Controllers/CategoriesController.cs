@@ -32,14 +32,9 @@ namespace sport_shop_api.Controllers
         }
 
         // PUT: api/Categories/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        [HttpPut]
+        public async Task<IActionResult> PutCategory(Category category)
         {
-            if (id != category.CategoryId)
-            {
-                return BadRequest();
-            }
-
             _context.Entry(category).State = EntityState.Modified;
 
             try

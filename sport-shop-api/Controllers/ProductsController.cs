@@ -30,13 +30,9 @@ namespace sport_shop_api.Controllers
         }
 
         // PUT: api/Products/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, [FromForm] ProductFileDTO newProductDTO)
+        [HttpPut]
+        public async Task<IActionResult> PutProduct([FromForm] ProductFileDTO newProductDTO)
         {
-            if (id != newProductDTO.Id)
-            {
-                return BadRequest("Route id and product id is different");
-            }
             try
             {
                 Product oldProduct = await _context.Products.FindAsync(newProductDTO.Id);
