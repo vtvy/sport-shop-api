@@ -140,10 +140,10 @@ namespace sport_shop_api.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim("UserId", user.UserId.ToString()),
+                new Claim("email", user.Email),
+                new Claim("name", user.Name),
+                new Claim("role", user.Role),
+                new Claim("userId", user.UserId.ToString()),
             };
 
             var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
