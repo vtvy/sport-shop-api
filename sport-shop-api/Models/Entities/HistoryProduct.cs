@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace sport_shop_api.Models.Entities
 {
@@ -11,7 +12,7 @@ namespace sport_shop_api.Models.Entities
         public int HistoryId { get; set; }
         [ForeignKey("ProductSizeId")]
         public ProductSize ProductSize { get; set; }
-        [ForeignKey("HistoryId")]
+        [ForeignKey("HistoryId"), JsonIgnore]
         public History History { get; set; }
         [Required]
         public int Quantity { get; set; }
