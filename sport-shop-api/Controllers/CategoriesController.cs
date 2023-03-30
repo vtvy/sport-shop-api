@@ -33,11 +33,8 @@ namespace sport_shop_api.Controllers
 
         // PUT: api/Categories/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, CategoryDTO categoryDTO)
+        public async Task<IActionResult> PutCategory(int id, Category category)
         {
-
-            Category category = _mapper.Map<Category>(categoryDTO);
-
             category.CategoryId = id;
             _context.Entry(category).State = EntityState.Modified;
 
@@ -56,19 +53,17 @@ namespace sport_shop_api.Controllers
 
         // POST: api/Categories
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(CategoryDTO categoryDTO)
+        public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-
-            Category category = _mapper.Map<Category>(categoryDTO);
             try
             {
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
-                return Ok(new { category.CategoryId });
+                return Ok();
             }
             catch (Exception)
             {
-                return BadRequest();
+                return Unauthorized();
             }
         }
 

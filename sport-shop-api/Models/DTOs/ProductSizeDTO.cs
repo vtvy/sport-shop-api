@@ -9,5 +9,7 @@ namespace sport_shop_api.Models.DTOs
         public string Name { get; set; }
         [Required]
         public int Price { get; set; }
+        [Required]
+        public int ProductId { get; set; }
     }
 }

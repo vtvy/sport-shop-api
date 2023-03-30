@@ -11,8 +11,8 @@ namespace sport_shop_api.Models.Entities
         [Required, MaxLength(50)]
         public string Name { get; set; }
         [Required]
-        public int Quantity { get; set; }
-        [Required]
+        public int Quality { get; set; }
+        [Required, MaxLength(150)]
         public string Url { get; set; } = string.Empty;
         [Required]
         public int Price { get; set; }
