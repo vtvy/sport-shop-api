@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     {
-
+        // this
         string connectionString;
         if (builder.Configuration["Type"] == "local")
         {
