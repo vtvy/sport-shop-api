@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EmailValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sport_shop_api.Data;
@@ -25,8 +26,30 @@ namespace sport_shop_api.Controllers
             _context = context;
         }
 
+        [HttpPut("changeinfo/{id}")]
+        public async Task<IActionResult> Info(int id, UserDTO user)
+        {
+            var currentUser = await _context.Users.FindAsync(id);
+            if (currentUser != null)
+            {
+
+                bool verified = BC.Verify(user.Password, currentUser.Password);
+
+                if (verified)
+                {
+                    currentUser.Name = user.Name;
+                    currentUser.Email = user.Email;
+                    currentUser.Address = user.Address;
+                    _context.Entry(currentUser).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+            }
+            return Unauthorized();
+        }
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User userLogin)
+        public async Task<IActionResult> Login(UserLoginDTO userLogin)
         {
             var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userLogin.Email.ToLower());
             if (currentUser != null)
@@ -44,16 +67,23 @@ namespace sport_shop_api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User userRegister)
+        public async Task<IActionResult> Register(UserDTO userRegister)
         {
+            if (!EmailValidator.Validate(userRegister.Email)) return BadRequest("Invalid email");
+
             var existed = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == userRegister.Email.ToLower());
 
             if (existed == null)
             {
-                userRegister.Password = BC.HashPassword(userRegister.Password);
-                _context.Users.Add(userRegister);
+                User newUser = new()
+                {
+                    Email = userRegister.Email,
+                    Password = BC.HashPassword(userRegister.Password)
+                };
+
+                _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
-                TokenDTO token = await GenerateToken(userRegister);
+                TokenDTO token = await GenerateToken(newUser);
                 return Ok(token);
 
             }
@@ -88,7 +118,7 @@ namespace sport_shop_api.Controllers
                 if (validdatedToken is JwtSecurityToken jwtSecurityToken && jwtSecurityToken.Header.Alg.Equals
                         (SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    int userId = int.Parse(tokenVerification.Claims.FirstOrDefault(r => r.Type == "UserId").Value);
+                    int userId = int.Parse(tokenVerification.Claims.FirstOrDefault(r => r.Type == "userId")?.Value);
 
                     RefreshToken storedRefreshToken = await _context.RefreshTokens.FirstOrDefaultAsync
                         (t => t.Token == oldToken.refresh_token);

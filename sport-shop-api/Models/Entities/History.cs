@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace sport_shop_api.Models.Entities
 {
     [Table("History")]
@@ -9,6 +8,8 @@ namespace sport_shop_api.Models.Entities
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        public bool OnDelivery { get; set; } = false;
         [Required]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         [Required]
