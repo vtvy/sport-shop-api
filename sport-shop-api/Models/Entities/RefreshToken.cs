@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sport_shop_api.Models.Entities
 {
-    [Table("RefreshToken"),]
+    [Table("RefreshToken")]
     public class RefreshToken
     {
         [Key]

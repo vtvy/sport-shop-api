@@ -8,10 +8,11 @@ namespace sport_shop_api.Helpers
     {
         public MapperProfile()
         {
-            CreateMap<Category, CategoryDTO>();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<ProductFileDTO, Product>();
             CreateMap<Product, ProductDTO>();
-            CreateMap<ProductSize, ProductSizeDTO>();
+            CreateMap<ProductSize, ProductSizeDTO>().ReverseMap();
+            CreateMap<HistoryProductDTO, HistoryProduct>();
         }
     }
 }
