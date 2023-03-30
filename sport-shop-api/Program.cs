@@ -80,10 +80,11 @@ app.UseAuthentication();
 app.UseStaticFiles();
 app.UseRouting();
 
+//("https://sport.phuongtran.xyz",
+//               "https://localhost:3000", "https://vtvy.tk/link"
+//               , "http://localhost:3001")
 
-app.UseCors(options => options.WithOrigins("https://sport.phuongtran.xyz",
-               "https://localhost:3000", "https://vtvy.tk/link"
-               , "http://localhost:3001").AllowAnyMethod().AllowAnyHeader());
+app.UseCors(options => options.WithOrigins("*").AllowAnyMethod().AllowAnyHeader());
 app.UseAuthorization();
 
 app.MapControllers();
