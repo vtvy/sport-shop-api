@@ -5,7 +5,7 @@ namespace sport_shop_api.Models.DTOs
     {
         [Required]
         public string Email { get; set; }
-        [Required, MaxLength(100)]
+        [Required]
         public string Password { get; set; }
         public string Name { get; set; } = "Unknown";
         public string Address { get; set; }

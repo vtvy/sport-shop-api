@@ -10,7 +10,7 @@ using System.Security.Claims;
 namespace sport_shop_api.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController, Authorize(Roles = "Admin, User")]
+    [ApiController, Authorize]
     public class HistoriesController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -68,13 +68,10 @@ namespace sport_shop_api.Controllers
         }
 
         // PUT: api/Histories/5
-        [HttpPut("{id}"), Authorize(Roles = "Admin")]
+        [HttpPut("{id}"), Authorize(Roles = "Delivery")]
         public async Task<IActionResult> PutHistory(int id)
         {
-            History history = await _context.Histories.Include(h => h.HistoryProducts)
-                .ThenInclude(hp => hp.ProductSize)
-                .ThenInclude(pz => pz.Product)
-                .FirstOrDefaultAsync(h => h.Id == id); ;
+            History history = await _context.Histories.FirstOrDefaultAsync(h => h.Id == id);
 
 
             if (history == null)
@@ -88,27 +85,6 @@ namespace sport_shop_api.Controllers
             history.UpdatedDate = DateTime.UtcNow;
             _context.Entry(history).State = EntityState.Modified;
 
-            try
-            {
-
-                history.HistoryProducts.ForEach(hp =>
-                {
-                    if (hp.ProductSize.Product.Quantity > hp.Quantity)
-                    {
-                        hp.ProductSize.Product.Quantity -= hp.Quantity;
-                        _context.Entry(hp.ProductSize.Product);
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                });
-            }
-            catch (Exception)
-            {
-                return BadRequest("Product quantity is not enough");
-            }
-
             await _context.SaveChangesAsync();
             return Ok();
         }
@@ -117,17 +93,18 @@ namespace sport_shop_api.Controllers
         [HttpPost]
         public async Task<ActionResult<History>> PostHistory(List<HistoryProductDTO> historyProductDTOs)
         {
+            using var transaction = _context.Database.BeginTransaction();
             try
             {
                 historyProductDTOs.ForEach(hp =>
                 {
                     bool existed = _context.ProductSizes.Any(ps => ps.Id == hp.ProductSizeId);
-                    if (!existed) throw new Exception();
+                    if (!existed || hp.Quantity <= 0) throw new Exception("Invalid product or quantity");
                 });
 
                 History newHistory = new()
                 {
-                    UserId = Int32.Parse(GetCurrentUserId())
+                    UserId = int.Parse(GetCurrentUserId())
                 };
                 _context.Histories.Add(newHistory);
                 await _context.SaveChangesAsync();
@@ -139,11 +116,24 @@ namespace sport_shop_api.Controllers
                 _context.HistoryProducts.AddRange(historyProducts);
                 await _context.SaveChangesAsync();
 
+                // decrease quantity of product
+                History history = await _context.Histories.Include(h => h.HistoryProducts)
+                .ThenInclude(hp => hp.ProductSize)
+                .ThenInclude(pz => pz.Product)
+                .FirstOrDefaultAsync(h => h.Id == newHistory.Id);
+
+                history.HistoryProducts.ForEach(hp =>
+                {
+                    hp.ProductSize.Product.Quantity -= hp.Quantity;
+                    _context.Entry(hp.ProductSize.Product);
+                });
+                await _context.SaveChangesAsync();
+                transaction.Commit();
                 return Ok(new { newHistory.Id });
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex);
             };
         }
 

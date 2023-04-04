@@ -9,7 +9,7 @@ namespace sport_shop_api.Models.Entities
     {
         [Key]
         public int CategoryId { get; set; }
-        [Required, MaxLength(50)]
+        [Required]
         public string Name { get; set; }
         public List<Product> Products { get; set; }
     }

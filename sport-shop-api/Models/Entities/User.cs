@@ -10,7 +10,7 @@ namespace sport_shop_api.Models.Entities
         public int UserId { get; set; }
         [Required]
         public string Email { get; set; }
-        [Required, MaxLength(100)]
+        [Required]
         public string Name { get; set; } = "Unknown";
         [Required]
         public string Password { get; set; }

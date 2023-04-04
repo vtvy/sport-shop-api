@@ -155,9 +155,9 @@ namespace sport_shop_api.Controllers
                     throw new Exception("Invalid access token");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex);
             }
 
 
@@ -174,6 +174,7 @@ namespace sport_shop_api.Controllers
                 new Claim("name", user.Name),
                 new Claim("role", user.Role),
                 new Claim("userId", user.UserId.ToString()),
+                new Claim("address", user.Address),
             };
 
             var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddHours(1), signingCredentials: credentials);

@@ -5,7 +5,7 @@ namespace sport_shop_api.Models.DTOs
     public class CategoryDTO
     {
         public int CategoryId { get; set; }
-        [Required, MaxLength(50)]
+        [Required]
         public string Name { get; set; }
     }
 }
