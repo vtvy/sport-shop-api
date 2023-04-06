@@ -28,7 +28,7 @@ namespace sport_shop_api.Controllers
         }
 
         [HttpPut("changeinfo")]
-        public async Task<IActionResult> Info(UserDTO user)
+        public async Task<IActionResult> Info(UserInfoDTO user)
         {
             int id = int.Parse(GetCurrentUserId());
             var currentUser = await _context.Users.FindAsync(id);
@@ -63,7 +63,7 @@ namespace sport_shop_api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserDTO userRegister)
+        public async Task<IActionResult> Register(UserLoginDTO userRegister)
         {
             if (!EmailValidator.Validate(userRegister.Email)) return BadRequest("Invalid email");
 

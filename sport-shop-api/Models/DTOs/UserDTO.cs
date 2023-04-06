@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-namespace sport_shop_api.Models.DTOs
+﻿namespace sport_shop_api.Models.DTOs
 {
-    public class UserDTO
+    public class UserInfoDTO
     {
-        [Required]
-        public string Email { get; set; }
-        [Required]
-        public string Password { get; set; }
-        public string Name { get; set; } = "Unknown";
+        public string Name { get; set; }
         public string Address { get; set; }
     }
 }
