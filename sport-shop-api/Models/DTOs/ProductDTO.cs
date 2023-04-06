@@ -7,7 +7,7 @@ namespace sport_shop_api.Models.DTOs
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required, Range(0, int.MaxValue)]
+        [Required, Range(1, int.MaxValue)]
         public int Quantity { get; set; }
         public string Url { get; set; }
         [Required]

@@ -14,7 +14,7 @@ namespace sport_shop_api.Models.Entities
         public ProductSize ProductSize { get; set; }
         [ForeignKey("HistoryId"), JsonIgnore]
         public History History { get; set; }
-        [Required, Range(0, double.MaxValue)]
+        [Required, Range(1, double.MaxValue)]
         public int Quantity { get; set; }
     }
 }
