@@ -27,24 +27,19 @@ namespace sport_shop_api.Controllers
             _context = context;
         }
 
-        [HttpPut("changeinfo/{id}")]
-        public async Task<IActionResult> Info(int id, UserDTO user)
+        [HttpPut("changeinfo")]
+        public async Task<IActionResult> Info(UserDTO user)
         {
+            int id = int.Parse(GetCurrentUserId());
             var currentUser = await _context.Users.FindAsync(id);
             if (currentUser != null)
             {
 
-                bool verified = BC.Verify(user.Password, currentUser.Password);
-
-                if (verified)
-                {
-                    currentUser.Name = user.Name;
-                    currentUser.Email = user.Email;
-                    currentUser.Address = user.Address;
-                    _context.Entry(currentUser).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                    return Ok();
-                }
+                currentUser.Name = user.Name;
+                currentUser.Address = user.Address;
+                _context.Entry(currentUser).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok();
             }
             return Unauthorized();
         }
@@ -208,6 +203,19 @@ namespace sport_shop_api.Controllers
                 access_token = accessToken,
                 refresh_token = refreshToken,
             };
+        }
+
+        private string GetCurrentUserId()
+        {
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                return userClaims.FirstOrDefault(o => o.Type == "userId")?.Value;
+            }
+            return null;
         }
     }
 }
