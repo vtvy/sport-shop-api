@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using BC = BCrypt.Net.BCrypt;
 
 namespace sport_shop_api.Controllers
@@ -75,10 +76,13 @@ namespace sport_shop_api.Controllers
 
             if (existed == null)
             {
+                string name = Regex.Replace(userRegister.Email.Split("@")[0], "[0-9]", "");
                 User newUser = new()
                 {
                     Email = userRegister.Email,
-                    Password = BC.HashPassword(userRegister.Password)
+                    Password = BC.HashPassword(userRegister.Password),
+                    Name = name[0].ToString().ToUpper() + name[1..],
+                    Address = "Unknown",
                 };
 
                 _context.Users.Add(newUser);
