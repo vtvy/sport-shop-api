@@ -39,7 +39,8 @@ namespace sport_shop_api.Controllers
                 currentUser.Address = user.Address;
                 _context.Entry(currentUser).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                return Ok();
+                TokenDTO token = await GenerateToken(currentUser);
+                return Ok(token);
             }
             return Unauthorized();
         }
