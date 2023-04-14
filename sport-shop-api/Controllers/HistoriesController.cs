@@ -68,7 +68,7 @@ namespace sport_shop_api.Controllers
         }
 
         // PUT: api/Histories/5
-        [HttpPut("{id}"), Authorize(Roles = "Delivery")]
+        [HttpPut("{id}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutHistory(int id)
         {
             History history = await _context.Histories.FirstOrDefaultAsync(h => h.Id == id);
