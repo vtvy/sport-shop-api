@@ -40,6 +40,7 @@ namespace sport_shop_api.Controllers
                         h.CreatedDate,
                         h.UpdatedDate,
                         h.UserId,
+                        h.User.Name,
                         h.User.Address,
                         h.HistoryProducts
                     }).ToListAsync();
