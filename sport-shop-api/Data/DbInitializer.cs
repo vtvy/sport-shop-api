@@ -15,7 +15,7 @@ namespace sport_shop_api.Data
                 List<User> users = new()
                 {
                     new User() { Email = configuration["Accounts:admin-email"], Password = BC.HashPassword(configuration["Accounts:admin-pass"]), Role = "Admin", Name = "Admin", Address = "CIT" },
-                    new User() { Email = configuration["Accounts:vy-email"], Password = BC.HashPassword(configuration["Accounts:vy-pass"]), Role = "Delivery", Name = "Trieu Vy", Address = "POST OFFICE"},
+                    new User() { Email = configuration["Accounts:vy-email"], Password = BC.HashPassword(configuration["Accounts:vy-pass"]), Role = "Admin", Name = "Trieu Vy", Address = "OFFICE"},
                 };
                 context.Users.AddRange(users);
                 context.SaveChanges();
