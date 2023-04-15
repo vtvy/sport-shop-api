@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace sport_shop_api.Migrations
 {
     /// <inheritdoc />
-    public partial class sqlv0 : Migration
+    public partial class sql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
